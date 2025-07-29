@@ -1,4 +1,6 @@
 # Dark Quiet Death
+> “People don’t die loud. They die quiet. And they die alone.” — *Bean*
+
 
 Dark Quiet Death (DQD) is a reimagined indie game based on the fictional cult classic “A Dark Quiet Death” by Doc and Bean, featured in the show *Mythic Quest*. This remake was crafted by [Prospy006](https://github.com/Prospy006) and Harlak for *The Blackout Jam*, celebrating atmospheric tension, emotional storytelling, and minimalist horror.
 
