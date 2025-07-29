@@ -1,0 +1,54 @@
+[gd_scene load_steps=10 format=3 uid="uid://cf8x3clrpq4uu"]
+
+[ext_resource type="Texture2D" uid="uid://dirhko3koi4ca" path="res://Sprites/Heavenly Blood-re.png" id="1_pbw6q"]
+[ext_resource type="Script" uid="uid://bfox2s0pg73g" path="res://Scripts/ghost.gd" id="2_v1gob"]
+[ext_resource type="Script" uid="uid://bjrf50sjb6tdb" path="res://Scripts/player.gd" id="3_jw32o"]
+[ext_resource type="Script" uid="uid://6eabod3qwpm4" path="res://Scripts/camera_2d.gd" id="4_50glp"]
+[ext_resource type="Texture2D" uid="uid://dba2lcxk0dx6r" path="res://Sprites/logo.png" id="5_vy5pj"]
+[ext_resource type="Script" uid="uid://cyfabuynjogc4" path="res://Scripts/color_rect.gd" id="6_v1gob"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_lgr22"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_fos0i"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3dxm6"]
+
+[node name="Main" type="Node2D"]
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="Sprite2D" type="Sprite2D" parent="Area2D"]
+texture = ExtResource("1_pbw6q")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("RectangleShape2D_lgr22")
+
+[node name="Ghost" type="Area2D" parent="."]
+position = Vector2(0, -1)
+script = ExtResource("2_v1gob")
+
+[node name="Sprite2D" type="Sprite2D" parent="Ghost"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ghost"]
+shape = SubResource("RectangleShape2D_fos0i")
+
+[node name="Player" type="CharacterBody2D" parent="."]
+script = ExtResource("3_jw32o")
+
+[node name="Camera2D" type="Camera2D" parent="Player"]
+script = ExtResource("4_50glp")
+
+[node name="Sprite2D" type="Sprite2D" parent="Player"]
+texture = ExtResource("5_vy5pj")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
+shape = SubResource("RectangleShape2D_3dxm6")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer"]
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("6_v1gob")
+
+[connection signal="body_entered" from="Ghost" to="Ghost" method="_on_body_entered"]
