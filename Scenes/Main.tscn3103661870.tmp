@@ -1,27 +1,49 @@
-[gd_scene load_steps=14 format=3 uid="uid://cf8x3clrpq4uu"]
+[gd_scene load_steps=17 format=3 uid="uid://cf8x3clrpq4uu"]
 
-[ext_resource type="TileSet" uid="uid://dnmxf23vxmvvp" path="res://Tilesets/floor.tres" id="3_bmxlf"]
+[ext_resource type="Texture2D" uid="uid://dirhko3koi4ca" path="res://Sprites/Heavenly Blood-re.png" id="1_pbw6q"]
+[ext_resource type="Script" uid="uid://bfox2s0pg73g" path="res://Scripts/ghost.gd" id="2_v1gob"]
 [ext_resource type="Script" uid="uid://bjrf50sjb6tdb" path="res://Scripts/player.gd" id="3_jw32o"]
-[ext_resource type="TileSet" uid="uid://dd3ymfbufygen" path="res://Tilesets/walls.tres" id="4_4kpch"]
 [ext_resource type="Script" uid="uid://6eabod3qwpm4" path="res://Scripts/camera_2d.gd" id="4_50glp"]
-[ext_resource type="TileSet" uid="uid://deejtmn33weec" path="res://Tilesets/ports.tres" id="5_grg3l"]
+[ext_resource type="Texture2D" uid="uid://cln3tnkc7nv22" path="res://Sprites/baby_shark.png" id="5_50glp"]
+[ext_resource type="TileSet" uid="uid://btjspts7ppuc7" path="res://Tilesets/MazeTiles.tres" id="5_bmxlf"]
+[ext_resource type="Script" uid="uid://d1dgxagbp3w1j" path="res://Scenes/canvas_layer.gd" id="6_4kpch"]
 [ext_resource type="Texture2D" uid="uid://bh68mccxl1bmm" path="res://Sprites/Torchlight.png" id="6_v1gob"]
 [ext_resource type="Shader" uid="uid://bcdyksagsx6dl" path="res://Shaders/blur.gdshader" id="7_jw32o"]
 [ext_resource type="Texture2D" uid="uid://dw7iwy27hwe5b" path="res://Sprites/elec_v_1.png" id="8_50glp"]
-[ext_resource type="Texture2D" uid="uid://bt661d2njii8a" path="res://Sprites/Baby_Shark/Idle/f_id_1.png" id="8_bmxlf"]
 [ext_resource type="Script" uid="uid://dh2iyhwfc7pjj" path="res://Scripts/maze_generator.gd" id="9_vy5pj"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_lgr22"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_fos0i"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vy5pj"]
 size = Vector2(136, 128)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3dxm6"]
-size = Vector2(156, 320)
+size = Vector2(290, 336)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_v1gob"]
 shader = ExtResource("7_jw32o")
 shader_parameter/blur_amount = 1.0
 
 [node name="Main" type="Node2D"]
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="Sprite2D" type="Sprite2D" parent="Area2D"]
+texture = ExtResource("1_pbw6q")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("RectangleShape2D_lgr22")
+
+[node name="Ghost" type="Area2D" parent="."]
+position = Vector2(0, -1)
+script = ExtResource("2_v1gob")
+
+[node name="Sprite2D" type="Sprite2D" parent="Ghost"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ghost"]
+shape = SubResource("RectangleShape2D_fos0i")
 
 [node name="RechargePort" type="Area2D" parent="."]
 position = Vector2(690, -118)
@@ -34,15 +56,22 @@ texture = ExtResource("8_50glp")
 
 [node name="MazeGenerator" type="Node2D" parent="."]
 script = ExtResource("9_vy5pj")
+port_tile_id = 1
 
-[node name="FloorLayer" type="TileMapLayer" parent="MazeGenerator"]
-tile_set = ExtResource("3_bmxlf")
+[node name="FloorLayer" type="TileMap" parent="MazeGenerator"]
+tile_set = ExtResource("5_bmxlf")
+format = 2
 
-[node name="WallLayer" type="TileMapLayer" parent="MazeGenerator"]
-tile_set = ExtResource("4_4kpch")
+[node name="WallLayer" type="TileMap" parent="MazeGenerator"]
+tile_set = ExtResource("5_bmxlf")
+format = 2
 
-[node name="PortLayer" type="TileMapLayer" parent="MazeGenerator"]
-tile_set = ExtResource("5_grg3l")
+[node name="PortLayer" type="TileMap" parent="MazeGenerator"]
+tile_set = ExtResource("5_bmxlf")
+format = 2
+
+[node name="CanvasLayer" type="CanvasLayer" parent="MazeGenerator"]
+script = ExtResource("6_4kpch")
 
 [node name="Player" type="CharacterBody2D" parent="."]
 script = ExtResource("3_jw32o")
@@ -51,13 +80,13 @@ script = ExtResource("3_jw32o")
 script = ExtResource("4_50glp")
 
 [node name="Sprite2D" type="Sprite2D" parent="Player"]
-texture = ExtResource("8_bmxlf")
+texture = ExtResource("5_50glp")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
 shape = SubResource("RectangleShape2D_3dxm6")
 
 [node name="FlashLight" type="PointLight2D" parent="Player"]
-position = Vector2(-20, 392)
+position = Vector2(-75, 370)
 rotation = 1.5708
 texture = ExtResource("6_v1gob")
 
@@ -65,14 +94,11 @@ texture = ExtResource("6_v1gob")
 
 [node name="BlurOverlay" type="ColorRect" parent="Player/CanvasLayer"]
 material = SubResource("ShaderMaterial_v1gob")
-anchors_preset = -1
-anchor_left = -0.5
-anchor_top = -0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-pivot_offset = Vector2(576, 324)
 
 [node name="Control" type="Control" parent="Player/CanvasLayer"]
 layout_mode = 3
@@ -88,5 +114,6 @@ offset_bottom = 23.0
 [node name="FlashLightFlicker" type="Timer" parent="Player"]
 wait_time = 0.1
 
+[connection signal="body_entered" from="Ghost" to="Ghost" method="_on_body_entered"]
 [connection signal="body_entered" from="RechargePort" to="Player" method="_on_recharge_port_body_entered"]
 [connection signal="body_exited" from="RechargePort" to="Player" method="_on_recharge_port_body_exited"]

@@ -1,32 +1,32 @@
 extends CharacterBody2D
 
-const BATTERY_DEPLETION      = 10.0
-const BATTERY_RECOVERY       = 5.0
-const STAMINA_DEPLETION      = 15.0
-const STAMINA_RECOVERY       = 5.0
+const BATTERY_DEPLETION       = 10.0
+const BATTERY_RECOVERY        = 5.0
+const STAMINA_DEPLETION       = 15.0
+const STAMINA_RECOVERY        = 5.0
 const FLASHLIGHT_TOGGLE_DELAY = 0.2
-const SANITY_DEPLETION       = 5.0
-const SANITY_RECOVERY        = 2.5
+const SANITY_DEPLETION        = 5.0
+const SANITY_RECOVERY         = 2.5
 
-@export var speed             = 200.0
-@export var sprint_multiplier = 1.7
-@export var stamina          = 100.0
+@export var speed              = 200.0
+@export var sprint_multiplier  = 1.7
+@export var stamina            = 100.0
 
-@onready var sanity_label    = get_node("./CanvasLayer/Control/SanityLabel")
-@onready var flashlight      = $FlashLight
-@onready var blur_rect       = $CanvasLayer/BlurOverlay
-@onready var flicker_timer   = $FlashLightFlicker
+@onready var sanity_label      = get_node("./CanvasLayer/Control/SanityLabel")
+@onready var flashlight        = $FlashLight
+@onready var blur_rect         = $CanvasLayer/BlurOverlay
+@onready var flicker_timer     = $FlashLightFlicker
 
-var battery                  = 100.0
-var sanity                   = 100.0
-var toggle_timer             = 0.0
-var can_sprint               = true
-var is_sprinting             = false
-var is_near_recharge_port    = false
-var is_recharging            = false
+var battery                    = 100.0
+var sanity                     = 100.0
+var toggle_timer               = 0.0
+var can_sprint                 = true
+var is_sprinting               = false
+var is_near_recharge_port      = false
+var is_recharging              = false
 
-func _physics_process(delta):
-	# Clamps
+func _physics_process(delta: float) -> void:
+	# CLAMPS
 	battery = clamp(battery, 0.0, 100.0)
 	stamina = clamp(stamina, 0.0, 100.0)
 	sanity  = clamp(sanity,  0.0, 100.0)
@@ -54,70 +54,76 @@ func _physics_process(delta):
 	var current_speed = speed
 	if is_sprinting:
 		current_speed = speed * sprint_multiplier
-
 	velocity = input_vector * current_speed
 	move_and_slide()
 
-	# BLUR
+	# MOVEMENT Sprint blur
 	var shader_mat = blur_rect.material as ShaderMaterial
 	if shader_mat:
-		var blur_amount = 0.0
 		if is_sprinting:
-			blur_amount = 1.0
-		shader_mat.set_shader_parameter("blur_amount", blur_amount)
+			shader_mat.set_shader_parameter("blur_amount", 1.0)
+		else:
+			shader_mat.set_shader_parameter("blur_amount", 0.0)
 
-	# LIGHT Toggle
+	# FLASHLIGHT Toggle
 	toggle_timer -= delta
 	if Input.is_action_just_pressed("toggle_flashlight") and toggle_timer <= 0.0:
 		flashlight.visible = not flashlight.visible
 		toggle_timer = FLASHLIGHT_TOGGLE_DELAY
 
-	# LIGHT Battery drain
+	# BATTERY Drain & Off
 	if flashlight.visible and battery > 0.0 and not is_recharging:
 		battery -= BATTERY_DEPLETION * delta
-
-	# LIGHT Battery enforcement
 	if battery <= 0.0:
 		flashlight.visible = false
 		toggle_timer = FLASHLIGHT_TOGGLE_DELAY
 
-	# LIGHT Battery recharge
-	if is_recharging and battery < 100.0:
-		battery += BATTERY_RECOVERY * delta
+	# PORT Recharge
 	is_recharging = is_near_recharge_port and battery < 100.0
+	if is_recharging:
+		battery += BATTERY_RECOVERY * delta
 
-	# LIGHT Flicker
+	# BATTERY Flicker
 	if battery <= 10.0 and flicker_timer.is_stopped():
 		flicker_timer.start()
 	elif battery > 10.0 and not flicker_timer.is_stopped():
 		flicker_timer.stop()
 		flashlight.visible = true
 
-	# SANITY Drain & Recover
+	# SANITY
+	var sanity_delta = 0.0
 	if not flashlight.visible:
-		sanity -= SANITY_DEPLETION * delta
+		sanity_delta = -SANITY_DEPLETION
 	else:
-		sanity += SANITY_RECOVERY * delta
+		if battery <= 10.0:
+			sanity_delta = -SANITY_DEPLETION * 0.5
+		else:
+			sanity_delta = SANITY_RECOVERY
+	sanity += sanity_delta * delta
 
-	# SANITY Game over
+	# GAME Over
 	if sanity <= 0.0:
 		_on_game_over()
-	
-	# DEBUG -------------------------------------------------------------------------------------------------------------------
-	sanity_label.text = "sanity: " + str(round(sanity))
 
-func _on_FlashLightFlicker_timeout():
+	# UI UPDATE
+	sanity_label.text = "Sanity: " + str(round(sanity))
+
+
+func _on_FlashLightFlicker_timeout() -> void:
 	if battery <= 10.0:
 		flashlight.visible = not flashlight.visible
+
 
 func _on_recharge_port_body_entered(body: Node2D) -> void:
 	if body == self:
 		is_near_recharge_port = true
 
+
 func _on_recharge_port_body_exited(body: Node2D) -> void:
 	if body == self:
 		is_near_recharge_port = false
 
-func _on_game_over():
-	# get_tree().change_scene("res://scenes/GameOver.tscn")
+
+func _on_game_over() -> void:
 	print("game over")
+	# get_tree().change_scene("res://scenes/GameOver.tscn")

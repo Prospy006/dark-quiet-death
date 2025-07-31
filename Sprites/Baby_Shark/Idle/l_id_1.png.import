@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cln3tnkc7nv22"
-path="res://.godot/imported/baby_shark.png-97652c445312a67b1bb7d96325ac8b23.ctex"
+uid="uid://drs2kf6by6lcg"
+path="res://.godot/imported/l_id_1.png-a6f45880ac3b56ae7ecce64d41130566.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/baby_shark.png"
-dest_files=["res://.godot/imported/baby_shark.png-97652c445312a67b1bb7d96325ac8b23.ctex"]
+source_file="res://Sprites/Baby_Shark/Idle/l_id_1.png"
+dest_files=["res://.godot/imported/l_id_1.png-a6f45880ac3b56ae7ecce64d41130566.ctex"]
 
 [params]
 
