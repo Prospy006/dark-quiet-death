@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dwcrc7qqhji6i"
-path="res://.godot/imported/wall_vertical.png-628afa1a491b06a6fe826b2039be8b2f.ctex"
+uid="uid://c7i8prp2ojf0i"
+path="res://.godot/imported/Corner_TL.png-b0a96a3e549348e825f869601aea49c2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/Tiles/wall_vertical.png"
-dest_files=["res://.godot/imported/wall_vertical.png-628afa1a491b06a6fe826b2039be8b2f.ctex"]
+source_file="res://Sprites/Tiles/Walls/Corner/Corner_TL.png"
+dest_files=["res://.godot/imported/Corner_TL.png-b0a96a3e549348e825f869601aea49c2.ctex"]
 
 [params]
 
